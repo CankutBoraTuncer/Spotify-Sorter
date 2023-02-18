@@ -1,4 +1,4 @@
-from Spotify import Spotify
+from SpotifySorter import SpotifySorter
 
 if __name__ == "__main__":
 
@@ -15,7 +15,7 @@ if __name__ == "__main__":
     
     
     # Initializing the spotify object
-    spotify = Spotify(client_id, client_secret, redirect_uri, scope)
+    spotify = SpotifySorter(client_id, client_secret, redirect_uri, scope)
     
     # Setting the username and the target playlist
     spotify.set_target_playlist(target_playlist_uri)

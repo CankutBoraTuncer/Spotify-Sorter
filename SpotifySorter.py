@@ -3,7 +3,7 @@ from spotipy.oauth2 import SpotifyOAuth
 from Playlist import Playlist
 from Track import Track
 
-class Spotify:
+class SpotifySorter:
      
     def __init__(self, client_id, client_secret, redirect_uri, scope):
         self._client_id = client_id
