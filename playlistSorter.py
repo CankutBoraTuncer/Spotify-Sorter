@@ -8,8 +8,8 @@ if __name__ == "__main__":
     redirect_uri = 'http://localhost:8888/callback/'
     scope = "playlist-modify-public"
     username = "21u33vmd6canqa3zrspq6w6qq"
-    target_playlist_uri = "spotify:playlist:1xvbg1RCIc7CX3p5CrzhsF"
-    genre = "pop"
+    target_playlist_uri = "spotify:playlist:6KeJfV2J3qWk1tXirvswuL"
+    genre = "rock"
     playlist_name = "Pop Demo"
     playlist_description = ""
     
@@ -26,6 +26,5 @@ if __name__ == "__main__":
     # Retrieve tracks from the existing playlist
     spotify.load_playlist_tracks()
   
-    
     spotify.create_playlist_by_genre(genre, playlist_name, playlist_description)
     

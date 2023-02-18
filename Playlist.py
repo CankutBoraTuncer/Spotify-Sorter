@@ -2,36 +2,36 @@ class Playlist:
     
     track_count = 0
    
-    def __init__(self, playlist_id, playlist_name="", playlist_genre = ""):
+    def __init__(self, playlist_id, playlist_name="", playlist_genre = [""]):
         self._playlist_name = playlist_name
         self._playlist_id = playlist_id
-        self._playlist_genre = playlist_genre
+        self._playlist_genre = playlist_genre[0]
         self._playlist_tracks = []
         
-    @classmethod
+    # 
     def get_playlist_name(self):
         return self._playlist_name
     
-    @classmethod
+    # @classmethod
     def get_playlist_id(self):
         return self._playlist_id
     
-    @classmethod
+    # @classmethod
     def get_playlist_genre(self):
         return self._playlist_genre
     
-    @classmethod
+    # @classmethod
     def get_playlist_tracks(self):
         return self._playlist_tracks
     
-    @classmethod  
+    # @classmethod  
     def track_exists(self, track_id):
         if (track_id in self._playlist_tracks.get_track_id()):
             return True
         return False
     
-    @classmethod
+    # @classmethod
     def update_playlist(self, track):
-        self._playlist_tracks.append([track])
-        print(self._playlist_tracks.length())
+        self._playlist_tracks.append(track)
+        print(len(self._playlist_tracks))
         return 

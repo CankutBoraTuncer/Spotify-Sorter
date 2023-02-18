@@ -16,7 +16,7 @@ class Spotify:
         self._target_playlist = None
         self._new_playlist = None
         
-    @classmethod
+    # @classmethod
     def initialize_spotify(self):
         # Set up authentication using the Spotify API
         self._spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='9d187d6237a542a9aaf72ab1bf705181',
@@ -24,17 +24,17 @@ class Spotify:
                                                redirect_uri='http://localhost:8888/callback/',
                                                scope='playlist-modify-public'))
         
-    @classmethod    
+    # @classmethod    
     def set_target_playlist(self, target_playlist_uri):
         self._target_playlist_uri = target_playlist_uri
         self._target_playlist = Playlist(target_playlist_uri)
         return
      
-    @classmethod    
+    # @classmethod    
     def set_username(self, username):
         self._username = username    
     
-    @classmethod    
+    # @classmethod    
     def load_playlist_tracks(self):
         results = self._spotify.user_playlist_tracks(self._username, self._target_playlist_uri)
         tracks = results['items']
@@ -44,38 +44,39 @@ class Spotify:
         self.__update_target_playlist(self.__create_track_list(tracks))
         return 
     
-    @classmethod
+    # @classmethod
     def create_playlist(self, playlist_name, playlist_description):
         playlist_id = self._spotify.user_playlist_create(user=self._username, name=playlist_name, public=True, description=playlist_description)['id']
         playlist = Playlist(playlist_id, playlist_name)
         self._new_playlist = playlist
         return 
     
-    @classmethod
+    # @classmethod
     def set_artist_info(self, artist):
         artist_id = artist.get_artist_id
         artist_info = self._spotify.artist(artist_id)
         artist.set_artist_info(artist_info)
         return 
     
-    @classmethod
+    # @classmethod
     def create_playlist_by_genre(self, genre, playlist_name, playlist_description = ""):
         self.create_playlist(playlist_name, playlist_description)
-        tracks = self._target_playlist.get_tracks()
+        tracks = self._target_playlist.get_playlist_tracks()
         for track in tracks:
-            if(track.get_track_genre() == genre):
-                self._spotify.playlist_add_items(self._new_playlist.get_playlist_id(), track.get_track_id())
+            print(track.get_track_genre())
+            if(genre in track.get_track_genre()):
+                self._spotify.playlist_add_items(self._new_playlist.get_playlist_id(), [track.get_track_id()])
         return    
         
         
-    @classmethod
+    # @classmethod
     def __update_target_playlist(self, tracks):
         for track in tracks:
             self._target_playlist.update_playlist(track)
         return
         
         
-    @classmethod
+    # @classsmethod
     def __create_track_list(self, tracks):
         track_objects = []
         for track in tracks:
