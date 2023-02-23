@@ -19,7 +19,7 @@ class Track:
         return self._track_name  
         
     def get_track_year(self):
-        return self._track_year
+        return int(self._track_year[0:4])
     
     def get_track_info(self):
         return self._track_info
@@ -40,7 +40,6 @@ class Track:
         return self._artist_id
     
     def set_track_genre(self, genre):
-        
         try: 
             self._track_genre = genre[0]  
             return True;
