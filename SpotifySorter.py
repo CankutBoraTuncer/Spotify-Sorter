@@ -4,7 +4,8 @@ from Playlist import Playlist
 from Track import Track
 
 class SpotifySorter:
-     
+    
+    indie_genres = ["i"]
     def __init__(self, client_id, client_secret, redirect_uri, scope):
         self._client_id = client_id
         self._client_secret = client_secret
@@ -16,25 +17,21 @@ class SpotifySorter:
         self._target_playlist = None
         self._new_playlist = None
         
-    # @classmethod
     def initialize_spotify(self):
         # Set up authentication using the Spotify API
         self._spotify = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='9d187d6237a542a9aaf72ab1bf705181',
                                                client_secret='ec7a2aa034824c77a6b20066b57c6c06',
                                                redirect_uri='http://localhost:8888/callback/',
                                                scope='playlist-modify-public'))
-        
-    # @classmethod    
+            
     def set_target_playlist(self, target_playlist_uri):
         self._target_playlist_uri = target_playlist_uri
         self._target_playlist = Playlist(target_playlist_uri)
         return
-     
-    # @classmethod    
+       
     def set_username(self, username):
         self._username = username    
-    
-    # @classmethod    
+     
     def load_playlist_tracks(self):
         results = self._spotify.user_playlist_tracks(self._username, self._target_playlist_uri)
         tracks = results['items']
@@ -44,39 +41,55 @@ class SpotifySorter:
         self.__update_target_playlist(self.__create_track_list(tracks))
         return 
     
-    # @classmethod
     def create_playlist(self, playlist_name, playlist_description):
         playlist_id = self._spotify.user_playlist_create(user=self._username, name=playlist_name, public=True, description=playlist_description)['id']
         playlist = Playlist(playlist_id, playlist_name)
         self._new_playlist = playlist
         return 
     
-    # @classmethod
     def set_artist_info(self, artist):
         artist_id = artist.get_artist_id
         artist_info = self._spotify.artist(artist_id)
         artist.set_artist_info(artist_info)
         return 
     
-    # @classmethod
-    def create_playlist_by_genre(self, genre, playlist_name, playlist_description = ""):
+    def create_playlist_by_year(self, startingYear, endingYear, playlist_name, playlist_description = ""):
         self.create_playlist(playlist_name, playlist_description)
         tracks = self._target_playlist.get_playlist_tracks()
         for track in tracks:
-            print(track.get_track_genre())
-            if(genre in track.get_track_genre()):
+            if(track.get_track_year() >= startingYear and track.get_track_year() <= endingYear):
                 self._spotify.playlist_add_items(self._new_playlist.get_playlist_id(), [track.get_track_id()])
         return    
         
         
-    # @classmethod
+        
+    def create_playlist_by_genre(self, genre, playlist_name, playlist_description = ""):
+        self.create_playlist(playlist_name, playlist_description)
+        tracks = self._target_playlist.get_playlist_tracks()
+        for track in tracks:
+            if(genre in track.get_track_genre()):
+                self._spotify.playlist_add_items(self._new_playlist.get_playlist_id(), [track.get_track_id()])
+        return    
+    
+    def save_tracks_to_txt(self):
+        tracks = self._target_playlist.get_playlist_tracks()
+        
+    def save_genres_to_txt(self):
+        tracks = self._target_playlist.get_playlist_tracks()
+        with open('genres.txt', 'w') as f:
+            for track in tracks:
+                try:
+                    f.write(f'{track.get_track_name()} : {track.get_track_genre()}')
+                    f.write('\n')
+                except:
+                    print(f'Error occured: - {track.get_track_name()}')
+                    
     def __update_target_playlist(self, tracks):
         for track in tracks:
             self._target_playlist.update_playlist(track)
         return
         
         
-    # @classsmethod
     def __create_track_list(self, tracks):
         track_objects = []
         for track in tracks:
@@ -86,6 +99,6 @@ class SpotifySorter:
             track_year = track['track']['album']['release_date']
             track_info = self._spotify.track(track_id)
             track = Track(track_id, track_name, track_year, track_info)
-            track.set_track_genre(self._spotify.artist(track.get_artist_id())['genres'])
-            track_objects.append(track) 
+            if(track.set_track_genre(self._spotify.artist(track.get_artist_id())['genres'])):
+                track_objects.append(track) 
         return track_objects
